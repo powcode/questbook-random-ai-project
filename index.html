@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=5">
+  <link rel="stylesheet" href="css/base.css?v=5">
+  <link rel="stylesheet" href="css/layout.css?v=5">
+  <link rel="stylesheet" href="css/components.css?v=5">
+</head>
+<body>
+  <!-- Level-up banner overlay -->
+  <div id="levelup-banner-container" class="levelup-banner-container" role="region" aria-label="Pemberitahuan Naik Level"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="#quests" class="logo" aria-label="Questbook Beranda">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 2.18l6 2.25v4.66c0 4.14-2.73 8.02-6 9.11-3.27-1.09-6-4.97-6-9.11V6.43l6-2.25z"/>
+        </svg>
+        <span class="logo-text">Questbook</span>
+      </a>
+      <nav aria-label="Navigasi Utama" class="main-nav">
+        <a href="#quests" id="nav-quests" class="nav-link" aria-current="page">Papan Quest</a>
+        <a href="#profile" id="nav-profile" class="nav-link">Profil</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main view containers -->
+  <main id="main-content" class="main-content">
+    <section id="quests" class="view-section" aria-label="Papan Quest">
+      <div class="board-header">
+        <div class="board-heading-wrapper">
+          <h1 class="board-heading">Papan Quest</h1>
+        </div>
+        <div class="board-actions">
+          <button type="button" id="btn-create-quest" class="btn btn-primary" aria-haspopup="dialog">
+            <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            <span>Buat Quest</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ARIA Tabs Container -->
+      <div class="quest-tabs-wrapper">
+        <div class="tabs-and-sort-row">
+          <div role="tablist" aria-label="Status Quest" class="quest-tablist">
+            <button type="button" role="tab" id="tab-active" aria-selected="true" aria-controls="panel-active" tabindex="0" class="tab-btn">
+              <span>Aktif</span>
+              <span class="tab-count" id="count-active" aria-label="jumlah quest aktif">0</span>
+            </button>
+            <button type="button" role="tab" id="tab-completed" aria-selected="false" aria-controls="panel-completed" tabindex="-1" class="tab-btn">
+              <span>Selesai</span>
+              <span class="tab-count" id="count-completed" aria-label="jumlah quest selesai">0</span>
+            </button>
+          </div>
+
+          <div class="sort-control">
+            <label for="select-sort-quests" class="sort-label">Urutkan:</label>
+            <select id="select-sort-quests" class="form-select-sort" aria-label="Urutkan quest">
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+              <option value="difficulty">Tingkat Kesulitan (Sulit)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tab Panel: Aktif -->
+        <div role="tabpanel" id="panel-active" aria-labelledby="tab-active" tabindex="0" class="tab-panel">
+          <div id="active-quests-container" class="quest-grid" aria-live="polite"></div>
+        </div>
+
+        <!-- Tab Panel: Selesai -->
+        <div role="tabpanel" id="panel-completed" aria-labelledby="tab-completed" tabindex="0" class="tab-panel" hidden>
+          <div id="completed-quests-container" class="quest-grid" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile" class="view-section" aria-label="Profil" hidden>
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="level-badge" id="profile-level-badge" aria-label="Level Karakter">
+            <span class="level-badge-label">LEVEL</span>
+            <span class="level-badge-number" id="profile-level-number">1</span>
+          </div>
+          <div class="profile-title-group">
+            <h1 class="profile-title">Lembar Karakter</h1>
+            <p class="profile-subtitle">Statistik dan pencapaian petualanganmu</p>
+          </div>
+        </div>
+
+        <!-- EXP Progress Section -->
+        <div class="exp-section">
+          <div class="exp-labels">
+            <span class="exp-title">Kemajuan EXP</span>
+            <span class="exp-text" id="profile-exp-text">0 / 100 EXP</span>
+          </div>
+          <div class="progressbar-track" role="progressbar" id="profile-progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-valuetext="0 / 100 EXP">
+            <div class="progressbar-fill" id="profile-progressbar-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-label">Total EXP</span>
+            <span class="stat-value" id="profile-total-exp">0</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Streak Saat Ini</span>
+            <span class="stat-value" id="profile-streak">0 Hari</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Quest Selesai</span>
+            <span class="stat-value" id="profile-completed-count">0</span>
+          </div>
+        </div>
+
+        <!-- Profile Actions (Backup & Restore) -->
+        <div class="profile-actions">
+          <h2 class="profile-actions-title">Penyimpanan & Cadangan</h2>
+          <div class="action-buttons-group">
+            <button type="button" id="btn-export-csv" class="btn btn-secondary">
+              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+              <span>Ekspor CSV</span>
+            </button>
+
+            <button type="button" id="btn-import-csv" class="btn btn-secondary">
+              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                <path fill="currentColor" d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+              </svg>
+              <span>Impor CSV</span>
+            </button>
+            <input type="file" id="input-import-csv" accept=".csv,text/csv" class="sr-only" aria-label="Pilih berkas CSV untuk impor">
+
+            <button type="button" id="btn-reset-data" class="btn btn-danger">
+              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+              <span>Reset Semua Data</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Gemini API Key Settings (F20) -->
+        <div class="profile-actions profile-ai-settings">
+          <h2 class="profile-actions-title">Kunci API Google Gemini (F20)</h2>
+          <p class="ai-key-notice">Kunci disimpan di browser ini. Siapa pun yang bisa membuka browser ini bisa melihatnya.</p>
+          <p class="ai-key-link-wrapper">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="link-ai-studio">
+              Dapatkan kunci di Google AI Studio
+            </a>
+          </p>
+
+          <div id="ai-key-status-display" class="ai-key-status-display"></div>
+
+          <form id="form-save-api-key" class="form-save-api-key" novalidate>
+            <div class="form-group" id="group-api-key">
+              <label for="input-api-key" class="form-label" id="label-api-key">Atur Kunci API</label>
+              <div class="input-action-row">
+                <input
+                  type="password"
+                  id="input-api-key"
+                  class="form-input"
+                  placeholder="Masukkan kunci API Gemini..."
+                  autocomplete="off"
+                  aria-describedby="api-key-error"
+                >
+                <button type="submit" id="btn-save-api-key" class="btn btn-primary">Simpan Kunci</button>
+              </div>
+              <span class="field-error" id="api-key-error" role="alert"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dialog containers -->
+  <dialog id="quest-dialog" class="app-dialog" aria-modal="true" aria-labelledby="quest-dialog-title">
+    <form id="quest-form" class="quest-form" novalidate method="dialog">
+      <div class="dialog-header">
+        <h2 id="quest-dialog-title" class="dialog-title">Buat Quest Baru</h2>
+        <button type="button" class="btn-dialog-close" id="btn-close-quest-dialog" aria-label="Tutup formulir">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="dialog-body">
+        <input type="hidden" id="quest-id" name="id" value="">
+
+        <!-- AI Input Section (F19) -->
+        <div class="ai-input-section" id="ai-input-section">
+          <div class="form-label-row">
+            <label for="ai-sentence-input" class="form-label">Tulis dengan kalimat</label>
+            <span class="char-counter" id="ai-char-counter" aria-live="polite">0 / 300</span>
+          </div>
+          <div class="ai-input-row">
+            <textarea
+              id="ai-sentence-input"
+              class="form-textarea ai-sentence-textarea"
+              rows="2"
+              maxlength="300"
+              placeholder="Contoh: Ujian matematika 14 april tentang kalkulus..."
+              aria-describedby="ai-notice ai-error ai-char-counter"
+            ></textarea>
+            <button type="button" id="btn-fill-ai" class="btn btn-secondary btn-fill-ai">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5z"/>
+              </svg>
+              <span>Isi dengan AI</span>
+            </button>
+          </div>
+          <p id="ai-notice" class="ai-input-notice">Kalimat ini akan dikirim ke Google Gemini.</p>
+          <p id="ai-key-missing-notice" class="ai-key-missing-notice" hidden>Atur kunci API di Profil dulu.</p>
+          <span id="ai-error" class="field-error ai-field-error" role="alert"></span>
+
+          <!-- Paper note with 4px Gold left border -->
+          <div id="ai-review-note" class="ai-review-note" role="status" hidden>
+            <p class="ai-review-text">Isian dari AI. Periksa sebelum menyimpan.</p>
+            <div id="ai-review-extra-notes" class="ai-review-extra-notes"></div>
+          </div>
+        </div>
+
+        <!-- Title Field -->
+        <div class="form-group" id="group-title">
+          <div class="form-label-row">
+            <label for="quest-title" class="form-label">
+              Judul <span class="required-indicator" aria-hidden="true">*</span>
+            </label>
+            <span class="char-counter" id="title-char-counter" aria-live="polite">0 / 80</span>
+          </div>
+          <input
+            type="text"
+            id="quest-title"
+            name="title"
+            class="form-input"
+            maxlength="80"
+            placeholder="Contoh: Mengalahkan monster naga"
+            required
+            aria-describedby="title-error title-char-counter"
+          >
+          <span class="field-error" id="title-error" role="alert" aria-live="assertive"></span>
+        </div>
+
+        <!-- Difficulty Radio Group (Seal Buttons) -->
+        <fieldset class="form-group" id="group-difficulty">
+          <legend class="form-label">Tingkat Kesulitan</legend>
+          <div class="seal-radio-group" role="radiogroup" aria-label="Pilih tingkat kesulitan">
+            <label class="seal-radio-label seal-mudah">
+              <input type="radio" name="difficulty" value="Mudah" class="seal-radio-input" checked>
+              <span class="seal-radio-btn">
+                <span class="seal-badge-chip badge-mudah">Mudah</span>
+                <span class="seal-exp-hint">+10 EXP</span>
+              </span>
+            </label>
+
+            <label class="seal-radio-label seal-sedang">
+              <input type="radio" name="difficulty" value="Sedang" class="seal-radio-input">
+              <span class="seal-radio-btn">
+                <span class="seal-badge-chip badge-sedang">Sedang</span>
+                <span class="seal-exp-hint">+25 EXP</span>
+              </span>
+            </label>
+
+            <label class="seal-radio-label seal-sulit">
+              <input type="radio" name="difficulty" value="Sulit" class="seal-radio-input">
+              <span class="seal-radio-btn">
+                <span class="seal-badge-chip badge-sulit">Sulit</span>
+                <span class="seal-exp-hint">+50 EXP</span>
+              </span>
+            </label>
+          </div>
+          <span class="difficulty-disabled-hint" id="difficulty-disabled-hint" hidden>Tingkat kesulitan tidak dapat diubah setelah quest selesai.</span>
+        </fieldset>
+
+        <!-- Description Field -->
+        <div class="form-group" id="group-description">
+          <div class="form-label-row">
+            <label for="quest-description" class="form-label">Deskripsi</label>
+            <span class="char-counter" id="desc-char-counter" aria-live="polite">0 / 300</span>
+          </div>
+          <textarea
+            id="quest-description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            maxlength="300"
+            placeholder="Catatan atau instruksi tambahan petualangan..."
+            aria-describedby="desc-error desc-char-counter"
+          ></textarea>
+          <span class="field-error" id="desc-error" role="alert" aria-live="assertive"></span>
+        </div>
+
+        <!-- Due Date Field (F16) -->
+        <div class="form-group" id="group-duedate">
+          <label for="quest-due-date" class="form-label">Tenggat Waktu (Opsional)</label>
+          <input
+            type="date"
+            id="quest-due-date"
+            name="due_date"
+            class="form-input form-input-date"
+            aria-describedby="duedate-error"
+          >
+          <span class="field-error" id="duedate-error" role="alert" aria-live="assertive"></span>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-quest">Batal</button>
+        <button type="submit" class="btn btn-primary" id="btn-submit-quest">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="app-dialog confirm-dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
+    <div class="dialog-header">
+      <h2 id="confirm-dialog-title" class="dialog-title">Konfirmasi</h2>
+      <button type="button" class="btn-dialog-close" id="btn-close-confirm-dialog" aria-label="Tutup konfirmasi">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <p id="confirm-message" class="confirm-message">Apakah Anda yakin?</p>
+      <p id="confirm-submessage" class="confirm-submessage" hidden></p>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-secondary" id="btn-cancel-confirm">Batal</button>
+      <button type="button" class="btn btn-primary" id="btn-accept-confirm">Konfirmasi</button>
+    </div>
+  </dialog>
+
+  <!-- Live announcements for screen readers -->
+  <div id="live-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Toast notification container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

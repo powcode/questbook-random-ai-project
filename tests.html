@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengujian Otomatis — Questbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    .tests-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-24) var(--space-16);
+    }
+    @media (min-width: 600px) {
+      .tests-container {
+        padding: var(--space-32);
+      }
+    }
+    .tests-header {
+      border-bottom: 2px solid var(--color-leather);
+      padding-bottom: var(--space-16);
+      margin-bottom: var(--space-24);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-16);
+    }
+    .tests-title {
+      font-family: var(--font-heading);
+      font-size: var(--font-size-h1);
+      color: var(--color-ink);
+    }
+    .tests-summary {
+      display: flex;
+      gap: var(--space-12);
+      font-family: var(--font-heading);
+      font-size: 0.9375rem;
+      font-weight: 700;
+    }
+    .summary-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--color-ink);
+    }
+    .summary-total {
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+    }
+    .summary-pass {
+      background-color: var(--color-forest);
+      color: var(--color-paper);
+    }
+    .summary-fail {
+      background-color: var(--color-crimson);
+      color: var(--color-paper);
+    }
+    .test-category {
+      margin-bottom: var(--space-32);
+      background-color: var(--color-paper);
+      border: 2px solid var(--color-leather);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(43, 29, 14, 0.1);
+    }
+    .category-title {
+      background-color: var(--color-parchment);
+      padding: var(--space-12) var(--space-20);
+      font-family: var(--font-heading);
+      font-size: 1.125rem;
+      color: var(--color-ink);
+      border-bottom: 1px solid rgba(90, 52, 24, 0.2);
+    }
+    .test-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .test-item {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-12) var(--space-20);
+      border-bottom: 1px solid rgba(90, 52, 24, 0.1);
+    }
+    .test-item:last-child {
+      border-bottom: none;
+    }
+    .test-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+    }
+    .test-name {
+      font-family: var(--font-body);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+    .test-status {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .status-pass {
+      background-color: var(--color-forest);
+      color: var(--color-paper);
+    }
+    .status-fail {
+      background-color: var(--color-crimson);
+      color: var(--color-paper);
+    }
+    .test-error {
+      margin-top: 6px;
+      font-size: 0.875rem;
+      color: var(--color-crimson);
+      font-family: monospace;
+      background-color: rgba(164, 22, 26, 0.08);
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+    .btn-return {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-8);
+      color: var(--color-ink);
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: var(--space-16);
+    }
+    .btn-return:hover {
+      color: var(--color-gold);
+    }
+  </style>
+</head>
+<body>
+  <div class="tests-container">
+    <a href="index.html#quests" class="btn-return">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      <span>Kembali ke Questbook</span>
+    </a>
+
+    <header class="tests-header">
+      <h1 class="tests-title">Hasil Uji Otomatis</h1>
+      <div id="tests-summary" class="tests-summary" aria-live="polite">
+        <span class="summary-pill summary-total" id="stat-total">Memuat...</span>
+      </div>
+    </header>
+
+    <main id="tests-results" aria-label="Daftar hasil pengujian">
+      <!-- Populated by tests.js -->
+    </main>
+  </div>
+
+  <script type="module">
+    import { runAutomatedTests } from './js/tests.js?v=2';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const resultsContainer = document.getElementById('tests-results');
+      const summaryContainer = document.getElementById('tests-summary');
+
+      const tests = await runAutomatedTests();
+
+      let passedCount = 0;
+      let failedCount = 0;
+
+      // Group by category
+      const categories = {};
+      tests.forEach(t => {
+        if (!categories[t.category]) categories[t.category] = [];
+        categories[t.category].push(t);
+        if (t.pass) passedCount++;
+        else failedCount++;
+      });
+
+      // Update Summary
+      summaryContainer.innerHTML = `
+        <span class="summary-pill summary-total">Total: ${tests.length}</span>
+        <span class="summary-pill summary-pass">Lulus: ${passedCount}</span>
+        ${failedCount > 0 ? `<span class="summary-pill summary-fail">Gagal: ${failedCount}</span>` : ''}
+      `;
+
+      // Render Categories
+      resultsContainer.innerHTML = Object.entries(categories).map(([catName, catTests]) => {
+        return `
+          <section class="test-category" aria-label="${catName}">
+            <h2 class="category-title">${catName}</h2>
+            <ul class="test-list">
+              ${catTests.map(t => `
+                <li class="test-item">
+                  <div class="test-item-row">
+                    <span class="test-name">${t.name}</span>
+                    <span class="test-status ${t.pass ? 'status-pass' : 'status-fail'}">
+                      ${t.pass ? 'LULUS' : 'GAGAL'}
+                    </span>
+                  </div>
+                  ${!t.pass ? `<div class="test-error">${t.error}</div>` : ''}
+                </li>
+              `).join('')}
+            </ul>
+          </section>
+        `;
+      }).join('');
+
+      console.log(`[Questbook Tests] Total: ${tests.length}, Passed: ${passedCount}, Failed: ${failedCount}`);
+      window.__testResults = { total: tests.length, passed: passedCount, failed: failedCount, tests };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+:root {
+  /* Color palette */
+  --color-parchment: #F4E7C5;
+  --color-paper: #FBF3DC;
+  --color-ink: #2B1D0E;
+  --color-umber: #6B5438;
+  --color-leather: #5A3418;
+  --color-gold: #E0A526;
+  --color-forest: #2F6B2F;
+  --color-crimson: #A4161A;
+  --color-royal: #1F4E9A;
+
+  /* Typography */
+  --font-heading: "Cinzel", Georgia, serif;
+  --font-body: "Crimson Text", Georgia, serif;
+
+  --font-size-h1: 2rem;       /* 32px */
+  --line-height-h1: 2.5rem;   /* 40px */
+  --font-size-h2: 1.5rem;     /* 24px */
+  --line-height-h2: 2rem;     /* 32px */
+  --font-size-h3: 1.125rem;   /* 18px */
+  --line-height-h3: 1.625rem; /* 26px */
+  --font-size-body: 1.0625rem;/* 17px */
+  --line-height-body: 1.6;
+  --font-size-small: 0.875rem;/* 14px */
+  --line-height-small: 1.4;
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing scale: exactly 4, 8, 12, 16, 24, 32, 48 px */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+
+  /* Layout dimensions */
+  --content-max-width: 1120px;
+  --grid-gap: 24px;
+  --touch-target-min: 44px;
+
+  /* Breakpoints */
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slide: 400ms ease-out;
+  --transition-stamp: 800ms ease-in-out;
+}
